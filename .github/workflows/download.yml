@@ -1,0 +1,16 @@
+name: scrape
+
+on:
+  schedule:
+    - cron: '0 10 * * 1-5'  # 10:00 UTC -> 07:00 Sao Paulo, Brazil
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: make yesterday
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Inserting fundamentus
