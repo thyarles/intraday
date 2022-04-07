@@ -2,15 +2,20 @@ name: scrape
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5'  # 10:00 UTC -> 07:00 Sao Paulo, Brazil
+    - cron: '0 23 * * 1-5'  # 23:00 UTC -> 20:00 Sao Paulo, Brazil
   workflow_dispatch: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - run: >
+        git init
+        git remote add origin git@github.com:meyer1994/intraday.git
+      - run: mkdir -pv data
+      - run: wget https://raw.githubusercontent.com/meyer1994/intraday/main/Makefile
       - run: make yesterday
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Inserting fundamentus
+          file_pattern: data/*.zip
