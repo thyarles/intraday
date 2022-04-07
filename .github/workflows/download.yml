@@ -9,13 +9,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: >
-        git init
-        git remote add origin git@github.com:meyer1994/intraday.git
-      - run: mkdir -pv data
-      - run: wget https://raw.githubusercontent.com/meyer1994/intraday/main/Makefile
-      - run: make yesterday
+      # Copied from:
+      #   https://github.com/actions/checkout/issues/172#issuecomment-689169138
+      - name: Sparse checkout
+        shell: bash
+        run: |
+          REPO="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git clone --filter=blob:none --no-checkout --depth 1  --sparse $REPO .
+          git sparse-checkout init --cone
+          git sparse-checkout add "data"
+          git checkout
+      - run: |
+          mkdir -pv data
+          make yesterday
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Inserting fundamentus
-          file_pattern: data/*.zip
+          commit_message: Inserting intraday
