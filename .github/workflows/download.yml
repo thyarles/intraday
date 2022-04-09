@@ -21,7 +21,7 @@ jobs:
           git checkout
       - run: |
           mkdir -pv data
-          make yesterday
+          make today
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Inserting intraday
